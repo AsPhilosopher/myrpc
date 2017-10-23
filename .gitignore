@@ -1,0 +1,33 @@
+*.class
+*.log
+
+# Package Files #
+*.war
+*.ear
+
+#maven
+*/target
+target
+
+#eclipse
+*/.settings
+.settings
+*/.project
+.project
+*/.classpath
+.classpath
+/derby.log
+*/appLogs
+appLogs
+.metadata
+*/.metadata
+# IntelliJ Idea
+.idea/
+out/
+*.ipr
+*.iws
+*.iml
+*/bin
+**/bin
+.DS_Store
+*/.DS_Store
