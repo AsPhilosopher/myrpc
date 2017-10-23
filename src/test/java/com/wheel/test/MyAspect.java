@@ -17,6 +17,7 @@ public class MyAspect {
 
     //配置切点 不执行方法体
     @Pointcut(value = "execution(* com.wheel.test.AOPTest.*(..)) && args(param)")
+//    @Pointcut(value = "execution(* com.wheel.test.*.*(*)) && args(param)")
     public void pointcut(Integer param) {
         System.out.println("切入点pointcut()" + param);
     }
