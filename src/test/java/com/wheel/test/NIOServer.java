@@ -33,8 +33,7 @@ public class NIOServer implements Runnable {
     //选择器，主要用来监控各个通道的事件
     private Selector selector;
 
-    //缓冲区
-//    private ByteBuffer buf = ByteBuffer.allocate(10);
+    private final Integer SIZE = 128;
 
     public NIOServer() {
         this.init();
@@ -102,7 +101,8 @@ public class NIOServer implements Runnable {
      */
     public void read(SelectionKey key) throws IOException {
 
-        ByteBuffer buffer = ByteBuffer.allocate(100);
+        //初始化缓冲区
+        ByteBuffer buffer = ByteBuffer.allocate(this.SIZE);
         //通过选择键来找到之前注册的通道
         SocketChannel channel = (SocketChannel) key.channel();
 
@@ -119,31 +119,34 @@ public class NIOServer implements Runnable {
             this.releaseChannel(key);
             System.out.println("Finish------");
         }
-        buffer.flip();
 
-        System.out.println(size + "  Size");
-
+        /**
+         * 获得对象字节数组 进行对应长度复制
+         */
         byte[] bytes = new byte[size];
-        System.out.println(buffer.array().length + " length");
         System.arraycopy(buffer.array(), 0, bytes, 0, size);
         SerializableBean serializableBean = (SerializableBean) ReadWriteObject.toObject(bytes);
         System.out.println("get: " + serializableBean);
 
+        /**
+         * 得到对象字节数组
+         */
         List<SerializableBean> serializableBeanList = new ArrayList<SerializableBean>(3);
         serializableBeanList.add(new SerializableBean("1", 11, 11.22));
         serializableBeanList.add(new SerializableBean("2", 22, 22.22));
         serializableBeanList.add(new SerializableBean("3", 33, 33.22));
-
         bytes = ReadWriteObject.toByteArray(serializableBeanList);
 
-//        bytes = ReadWriteObject.toByteArray(serializableBean);
+        /**
+         * 传输对象字节数组
+         */
         buffer = null;
         buffer = ByteBuffer.allocate(bytes.length);
         buffer.put(bytes);
         buffer.flip();
-
         channel.write(buffer);
 
+        buffer = null;
         this.releaseChannel(key);
     }
 
@@ -167,7 +170,7 @@ public class NIOServer implements Runnable {
                     //然后将它从返回键队列中删除
                     selectorKeys.remove();
                     if (!key.isValid()) { // 选择键无效
-                        System.out.println("无效的键");
+                        System.out.println("Invalid key");
                         continue;
                     }
                     if (key.isAcceptable()) {

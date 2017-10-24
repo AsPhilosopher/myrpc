@@ -15,30 +15,35 @@ import java.util.List;
  * @author 陈樟杰
  */
 public class NIOClient {
-    //创建缓冲区
-//    private ByteBuffer buffer = ByteBuffer.allocate(5);
-
-    //访问服务器
+    /**
+     * 请求服务器
+     *
+     * @param host
+     * @param port
+     * @throws IOException
+     */
     public void request(String host, int port) throws IOException {
         InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(host), port);
         SocketChannel socket = null;
         try {
-
             socket = SocketChannel.open();
             socket.connect(address);
 
+            /**
+             * 得到对象字节数组
+             */
             SerializableBean serializableBean = new SerializableBean("11", 11, 11.11);
             byte[] bytes = ReadWriteObject.toByteArray(serializableBean);
-//            System.out.println(bytes.length + "  length");
             ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
 
+            /**
+             * 传输对象字节数组
+             */
             buffer.put(bytes);
             buffer.flip();
             socket.write(buffer);
 
             buffer.clear();
-
-            buffer = ByteBuffer.allocate(100);
             int count;
             int size = 0;
             while (0 != (count = socket.read(buffer)) && -1 != count) {
@@ -48,16 +53,16 @@ public class NIOClient {
                     buffer = ExtendBuffer.extendBuffer(buffer, 2);
                 }
             }
-            buffer.flip();
 
-            System.out.println(size + " size");
+            /**
+             * 获得对象字节数组 进行对应长度复制
+             */
             bytes = new byte[size];
             System.arraycopy(buffer.array(), 0, bytes, 0, size);
-            /*SerializableBean serializableBean1 = (SerializableBean) ReadWriteObject.toObject(bytes);
-            System.out.println(serializableBean1 + "####");*/
-
             List list = (List) ReadWriteObject.toObject(buffer.array());
             System.out.println(list);
+
+            buffer = null;
 
         } catch (Exception e) {
             e.printStackTrace();
