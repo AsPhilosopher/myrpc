@@ -25,55 +25,81 @@ public class NIOClient {
     public void request(String host, int port) throws IOException {
         InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(host), port);
         SocketChannel socket = null;
-        try {
-            socket = SocketChannel.open();
-            socket.connect(address);
+        for (int i = 0; i < 10000; i++) {
+            try {
+                socket = SocketChannel.open();
+                socket.connect(address);
 
-            /**
-             * 得到对象字节数组
-             */
-            SerializableBean serializableBean = new SerializableBean("11", 11, 11.11);
-            byte[] bytes = ReadWriteObject.toByteArray(serializableBean);
-            ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
+                /**
+                 * 得到对象字节数组
+                 */
+                SerializableBean serializableBean = new SerializableBean("11", 11, 11.11);
+                byte[] bytes = ReadWriteObject.toByteArray(serializableBean);
+                ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
 
-            /**
-             * 传输对象字节数组
-             */
-            buffer.put(bytes);
-            buffer.flip();
-            socket.write(buffer);
+                /**
+                 * 传输对象字节数组
+                 */
+                buffer.put(bytes);
+                buffer.flip();
+                socket.write(buffer);
 
-            buffer.clear();
-            int count;
-            int size = 0;
-            while (0 != (count = socket.read(buffer)) && -1 != count) {
-                size += count;
-                //需要扩容
-                if (size >= buffer.capacity()) {
-                    buffer = ExtendBuffer.extendBuffer(buffer, 2);
+                buffer.clear();
+                int count;
+                int size = 0;
+                while (0 != (count = socket.read(buffer)) && -1 != count) {
+                    size += count;
+                    //需要扩容
+                    if (size >= buffer.capacity()) {
+                        buffer = ExtendBuffer.extendBuffer(buffer, 2);
+                    }
                 }
-            }
 
-            /**
-             * 获得对象字节数组 进行对应长度复制
-             */
-            bytes = new byte[size];
-            System.arraycopy(buffer.array(), 0, bytes, 0, size);
-            List list = (List) ReadWriteObject.toObject(buffer.array());
-            System.out.println(list);
+                /**
+                 * 获得对象字节数组 进行对应长度复制
+                 */
+                bytes = new byte[size];
+                System.arraycopy(buffer.array(), 0, bytes, 0, size);
+                List list = (List) ReadWriteObject.toObject(buffer.array());
+                System.out.println(list);
 
-            buffer = null;
+                buffer = null;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (socket != null) {
-                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (socket != null) {
+                    socket.close();
+                }
             }
         }
     }
 
     public static void main(String[] args) throws IOException {
-        new NIOClient().request("localhost", 8099);
+        NIOClient nioClient = new NIOClient();
+        new Thread(() -> {
+            try {
+                nioClient.request("localhost", 8099);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        new Thread(() -> {
+            try {
+                nioClient.request("localhost", 8099);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        new Thread(() -> {
+            try {
+                nioClient.request("localhost", 8099);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
     }
 }
