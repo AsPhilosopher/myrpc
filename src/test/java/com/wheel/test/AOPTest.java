@@ -6,7 +6,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Created with IntelliJ IDEA
@@ -29,14 +30,17 @@ public class AOPTest {
         componentBean.doSomething();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
         AOPTest aopTest = (AOPTest) context.getBean("aopTest");
-        aopTest.aop(10);
+        /*aopTest.aop(10);
         try {
             aopTest.aop(null);
         } catch (Exception e) {
             System.out.println(e);
-        }
+        }*/
+
+        Method method = AOPTest.class.getMethod("aop", Integer.class);
+        method.invoke(aopTest, 10);
     }
 }
