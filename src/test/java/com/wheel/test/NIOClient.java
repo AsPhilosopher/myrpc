@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created with IntelliJ IDEA
@@ -15,6 +16,8 @@ import java.util.List;
  * @author 陈樟杰
  */
 public class NIOClient {
+    public static AtomicLong atomicLong = new AtomicLong(0);
+
     /**
      * 请求服务器
      *
@@ -25,7 +28,8 @@ public class NIOClient {
     public void request(String host, int port) throws IOException {
         InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(host), port);
         SocketChannel socket = null;
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 5000; i++) {
+            atomicLong.incrementAndGet();
             try {
                 socket = SocketChannel.open();
                 socket.connect(address);
@@ -33,7 +37,7 @@ public class NIOClient {
                 /**
                  * 得到对象字节数组
                  */
-                SerializableBean serializableBean = new SerializableBean("11", 11, 11.11);
+                SerializableBean serializableBean = new SerializableBean(i + "", i, i);
                 byte[] bytes = ReadWriteObject.toByteArray(serializableBean);
                 ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
 
@@ -101,5 +105,11 @@ public class NIOClient {
             }
         }).start();
 
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("atomic: " + atomicLong.get());
     }
 }

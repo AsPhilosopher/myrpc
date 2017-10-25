@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created with IntelliJ IDEA
@@ -34,6 +35,9 @@ public class NIOServer implements Runnable {
     private Selector selector;
 
     private final Integer SIZE = 128;
+
+    public static AtomicLong atomicLongAcc = new AtomicLong(0);
+    public static AtomicLong atomicLongRead = new AtomicLong(0);
 
     public NIOServer() {
         this.init();
@@ -74,6 +78,8 @@ public class NIOServer implements Runnable {
      * @throws IOException
      */
     public void accept(SelectionKey key) throws IOException {
+        atomicLongAcc.incrementAndGet();
+
         ServerSocketChannel server = (ServerSocketChannel) key.channel();
 
         Random random = new Random();
@@ -100,6 +106,7 @@ public class NIOServer implements Runnable {
      * @throws IOException
      */
     public void read(SelectionKey key) throws IOException {
+        atomicLongRead.incrementAndGet();
 
         //初始化缓冲区
         ByteBuffer buffer = ByteBuffer.allocate(this.SIZE);
@@ -131,7 +138,8 @@ public class NIOServer implements Runnable {
         /**
          * 得到对象字节数组
          */
-        List<SerializableBean> serializableBeanList = new ArrayList<SerializableBean>(3);
+        List<SerializableBean> serializableBeanList = new ArrayList<SerializableBean>(4);
+        serializableBeanList.add(serializableBean);
         serializableBeanList.add(new SerializableBean("1", 11, 11.22));
         serializableBeanList.add(new SerializableBean("2", 22, 22.22));
         serializableBeanList.add(new SerializableBean("3", 33, 33.22));
@@ -191,5 +199,13 @@ public class NIOServer implements Runnable {
         NIOServer server = new NIOServer();
         Thread thread = new Thread(server);
         thread.start();
+
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(atomicLongAcc.get() + " @@@");
+        System.out.println(atomicLongRead.get() + " $$$");
     }
 }
