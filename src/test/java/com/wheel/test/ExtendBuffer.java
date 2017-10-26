@@ -17,7 +17,7 @@ public class ExtendBuffer {
      * @param multiple
      * @return
      */
-    public static ByteBuffer extendBuffer(ByteBuffer byteBuffer, double multiple) {
+    public static ByteBuffer extendBuffer(ByteBuffer byteBuffer, Double multiple) {
         int size = byteBuffer.capacity();
         ByteBuffer newBuffer = ByteBuffer.allocate((int) (size * multiple));
         newBuffer.put(byteBuffer.array());

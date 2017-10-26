@@ -28,8 +28,7 @@ public class NIOClient {
     public void request(String host, int port) throws IOException {
         InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(host), port);
         SocketChannel socket = null;
-        for (int i = 0; i < 5000; i++) {
-            atomicLong.incrementAndGet();
+        for (int i = 0; i < 15000; i++) {
             try {
                 socket = SocketChannel.open();
                 socket.connect(address);
@@ -55,7 +54,7 @@ public class NIOClient {
                     size += count;
                     //需要扩容
                     if (size >= buffer.capacity()) {
-                        buffer = ExtendBuffer.extendBuffer(buffer, 2);
+                        buffer = ExtendBuffer.extendBuffer(buffer, 2.0);
                     }
                 }
 
@@ -68,6 +67,8 @@ public class NIOClient {
                 System.out.println(list);
 
                 buffer = null;
+
+                atomicLong.incrementAndGet();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -97,13 +98,13 @@ public class NIOClient {
             }
         }).start();
 
-        new Thread(() -> {
+        /*new Thread(() -> {
             try {
                 nioClient.request("localhost", 8099);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        }).start();*/
 
         try {
             Thread.sleep(60000);

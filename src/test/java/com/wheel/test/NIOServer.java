@@ -119,7 +119,7 @@ public class NIOServer implements Runnable {
             size += count;
             //需要扩容
             if (size >= buffer.capacity()) {
-                buffer = ExtendBuffer.extendBuffer(buffer, 2);
+                buffer = ExtendBuffer.extendBuffer(buffer, 2.0);
             }
         }
         if (-1 == count) {
@@ -191,8 +191,14 @@ public class NIOServer implements Runnable {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                try {//关闭serversocket
+                    this.serversocket1.close();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
             }
         }
+
     }
 
     public static void main(String[] args) {
