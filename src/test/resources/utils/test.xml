@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tests>
+    <node>1234</node>
+    <attr id="123" name="hihi"></attr>
+</tests>
