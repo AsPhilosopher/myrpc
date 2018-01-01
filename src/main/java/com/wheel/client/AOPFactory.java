@@ -18,8 +18,6 @@ public class AOPFactory {
      */
     private static final String IP = "127.0.0.1";
     private static final Integer PORT = 8899;
-    private static final RequestData REQUEST_DATA =
-            new RequestData("test", "com.wheel.test.TestService", "action", new Object[]{}, 1000L, 1000L);
 
     /**
      * 根据服务名返回代理对象
@@ -42,7 +40,7 @@ public class AOPFactory {
      */
     public static <T> T getBean(Class<T> tClass, RequestData requestData) {
 
-        InvocationHandler handler = new RPCProxy(IP, PORT, REQUEST_DATA);
+        InvocationHandler handler = new RPCProxy(IP, PORT, requestData);
         return (T) Proxy.newProxyInstance(tClass.getClassLoader(), new Class[]{tClass}, handler);
     }
 }

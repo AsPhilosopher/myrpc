@@ -39,11 +39,9 @@ public class RequestData implements Serializable {
     public RequestData() {
     }
 
-    public RequestData(String serviceName, String interfaceFullName, String methodName, Object[] args, Long executeTimeout, Long responseTimeout) {
+    public RequestData(String serviceName, String interfaceFullName, Long executeTimeout, Long responseTimeout) {
         this.serviceName = serviceName;
         this.interfaceFullName = interfaceFullName;
-        this.methodName = methodName;
-        this.args = args;
         this.executeTimeout = executeTimeout;
         this.responseTimeout = responseTimeout;
     }

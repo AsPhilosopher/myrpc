@@ -1,6 +1,7 @@
 package com.wheel.test;
 
 import com.wheel.client.AOPFactory;
+import com.wheel.dto.RequestData;
 
 /**
  * Created with IntelliJ IDEA
@@ -11,7 +12,9 @@ import com.wheel.client.AOPFactory;
  */
 public class ClientTest {
     public static void main(String[] args) {
-        TestService testService = AOPFactory.getBean(TestService.class, null);
+        RequestData requestData =
+                new RequestData("test", "com.wheel.test.TestService", 1000L, 1000L);
+        TestService testService = AOPFactory.getBean(TestService.class, requestData);
         System.out.println(testService.action() + " @@@@@");
     }
 }
