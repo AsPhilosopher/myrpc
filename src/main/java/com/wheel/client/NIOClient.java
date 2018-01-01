@@ -72,6 +72,14 @@ public class NIOClient {
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
         }
 
         /**
@@ -81,7 +89,6 @@ public class NIOClient {
         System.arraycopy(buffer.array(), 0, objectBytes, 0, size);
         Object resultData = SerializeUtils.toObject(buffer.array());
 
-        ResponseData responseData = new ResponseData(200, "SUCCESS", resultData);
-        return responseData;
+        return (ResponseData) resultData;
     }
 }

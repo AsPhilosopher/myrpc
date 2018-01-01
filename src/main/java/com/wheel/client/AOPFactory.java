@@ -17,7 +17,7 @@ public class AOPFactory {
      * 数据先本地写死
      */
     private static final String IP = "127.0.0.1";
-    private static final Integer PORT = 8888;
+    private static final Integer PORT = 8899;
     private static final RequestData REQUEST_DATA =
             new RequestData("test", "com.wheel.test.TestService", "action", new Object[]{}, 1000L, 1000L);
 

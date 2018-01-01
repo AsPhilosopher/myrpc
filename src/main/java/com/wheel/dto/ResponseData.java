@@ -1,5 +1,7 @@
 package com.wheel.dto;
 
+import com.wheel.dto.enums.ResponseEnum;
+
 import java.io.Serializable;
 
 /**
@@ -25,6 +27,12 @@ public class ResponseData implements Serializable {
     private Object data;
 
     public ResponseData() {
+    }
+
+    public ResponseData(ResponseEnum responseEnum, Object data) {
+        this.code = responseEnum.getCode();
+        this.message = responseEnum.getMessage();
+        this.data = data;
     }
 
     public ResponseData(Integer code, String message, Object data) {

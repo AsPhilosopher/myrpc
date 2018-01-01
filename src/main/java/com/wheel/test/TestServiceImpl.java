@@ -9,7 +9,8 @@ package com.wheel.test;
  */
 public class TestServiceImpl implements TestService {
     @Override
-    public void action() {
+    public Integer action() {
         System.out.println("do action");
+        return 200;
     }
 }

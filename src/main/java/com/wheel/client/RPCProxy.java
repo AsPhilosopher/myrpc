@@ -64,6 +64,6 @@ public class RPCProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return NIOClient.remoteRequest(ip, port, requestData);
+        return NIOClient.remoteRequest(ip, port, requestData).getData();
     }
 }

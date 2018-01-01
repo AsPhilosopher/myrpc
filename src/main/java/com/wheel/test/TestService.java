@@ -8,5 +8,5 @@ package com.wheel.test;
  * @author 陈樟杰
  */
 public interface TestService {
-    void action();
+    Integer action();
 }
