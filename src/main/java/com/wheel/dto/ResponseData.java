@@ -1,5 +1,7 @@
 package com.wheel.dto;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA
  * Date: 2017/12/13
@@ -7,7 +9,8 @@ package com.wheel.dto;
  *
  * @author 陈樟杰
  */
-public class ResponseData {
+public class ResponseData implements Serializable {
+    private static final long serialVersionUID = 9130211433825531795L;
     /**
      * 结果码
      */
@@ -20,6 +23,15 @@ public class ResponseData {
      * 结果数据
      */
     private Object data;
+
+    public ResponseData() {
+    }
+
+    public ResponseData(Integer code, String message, Object data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
 
     public Integer getCode() {
         return code;

@@ -29,6 +29,12 @@ public class RPCProxy implements InvocationHandler {
     public RPCProxy() {
     }
 
+    public RPCProxy(String ip, Integer port, RequestData requestData) {
+        this.ip = ip;
+        this.port = port;
+        this.requestData = requestData;
+    }
+
     public String getIp() {
         return ip;
     }
@@ -58,6 +64,6 @@ public class RPCProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return null;
+        return NIOClient.remoteRequest(ip, port, requestData);
     }
 }

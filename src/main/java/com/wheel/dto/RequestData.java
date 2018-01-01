@@ -1,5 +1,7 @@
 package com.wheel.dto;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA
  * Date: 2017/12/13
@@ -7,7 +9,8 @@ package com.wheel.dto;
  *
  * @author 陈樟杰
  */
-public class RequestData {
+public class RequestData implements Serializable {
+    private static final long serialVersionUID = 4329060581890362788L;
     /**
      * 服务名称
      */
@@ -17,6 +20,14 @@ public class RequestData {
      */
     private String interfaceFullName;
     /**
+     * 方法名
+     */
+    private String methodName;
+    /**
+     * 参数列表
+     */
+    private Object[] args;
+    /**
      * 执行超时
      */
     private Long executeTimeout;
@@ -24,6 +35,18 @@ public class RequestData {
      * 响应超时
      */
     private Long responseTimeout;
+
+    public RequestData() {
+    }
+
+    public RequestData(String serviceName, String interfaceFullName, String methodName, Object[] args, Long executeTimeout, Long responseTimeout) {
+        this.serviceName = serviceName;
+        this.interfaceFullName = interfaceFullName;
+        this.methodName = methodName;
+        this.args = args;
+        this.executeTimeout = executeTimeout;
+        this.responseTimeout = responseTimeout;
+    }
 
     public String getServiceName() {
         return serviceName;
@@ -40,6 +63,24 @@ public class RequestData {
 
     public RequestData setInterfaceFullName(String interfaceFullName) {
         this.interfaceFullName = interfaceFullName;
+        return this;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public RequestData setMethodName(String methodName) {
+        this.methodName = methodName;
+        return this;
+    }
+
+    public Object[] getArgs() {
+        return args;
+    }
+
+    public RequestData setArgs(Object[] args) {
+        this.args = args;
         return this;
     }
 

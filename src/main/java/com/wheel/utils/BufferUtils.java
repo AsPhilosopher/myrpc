@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  *
  * @author 陈樟杰
  */
-public class BufferExtendUtils {
+public class BufferUtils {
     /**
      * 按倍数扩容 需要返回引用
      *

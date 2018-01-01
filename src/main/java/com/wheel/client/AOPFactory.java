@@ -2,6 +2,9 @@ package com.wheel.client;
 
 import com.wheel.dto.RequestData;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
 /**
  * Created with IntelliJ IDEA
  * Date: 2017/12/13
@@ -10,6 +13,14 @@ import com.wheel.dto.RequestData;
  * @author 陈樟杰
  */
 public class AOPFactory {
+    /**
+     * 数据先本地写死
+     */
+    private static final String IP = "127.0.0.1";
+    private static final Integer PORT = 8888;
+    private static final RequestData REQUEST_DATA =
+            new RequestData("test", "com.wheel.test.TestService", "action", new Object[]{}, 1000L, 1000L);
+
     /**
      * 根据服务名返回代理对象
      *
@@ -30,6 +41,8 @@ public class AOPFactory {
      * @return
      */
     public static <T> T getBean(Class<T> tClass, RequestData requestData) {
-        return null;
+
+        InvocationHandler handler = new RPCProxy(IP, PORT, REQUEST_DATA);
+        return (T) Proxy.newProxyInstance(tClass.getClassLoader(), new Class[]{tClass}, handler);
     }
 }
