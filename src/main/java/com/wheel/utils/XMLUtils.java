@@ -41,7 +41,7 @@ public class XMLUtils {
         try {
             document = reader.read(file);
         } catch (DocumentException e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
         }
 
         Element root = document.getRootElement();
@@ -68,7 +68,7 @@ public class XMLUtils {
         try {
             document = reader.read(file);
         } catch (DocumentException e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
         }
 
         Element root = document.getRootElement();

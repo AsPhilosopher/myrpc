@@ -60,7 +60,7 @@ public class SimpleLoadBalanceStrategy implements LoadBalanceStrategy {
             //OP_READ用于读取操作的操作集位 这里注册的是客户端channel
             connectionUnit.getSocketChannel().register(this.selector, SelectionKey.OP_READ);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
         }
         return connectionUnit;
     }

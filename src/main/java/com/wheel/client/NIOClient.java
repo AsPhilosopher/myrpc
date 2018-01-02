@@ -40,9 +40,9 @@ public class NIOClient {
             socket = SocketChannel.open();
             socket.connect(address);
         } catch (UnknownHostException e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
         }
 
         byte[] objectBytes = SerializeUtils.toByteArray(requestData);
@@ -56,7 +56,7 @@ public class NIOClient {
         try {
             socket.write(buffer);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
         }
         buffer.clear();
 
@@ -71,13 +71,13 @@ public class NIOClient {
                 }
             }
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
         } finally {
             if (socket != null) {
                 try {
                     socket.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage());
+                    logger.error(e + "");
                 }
             }
         }

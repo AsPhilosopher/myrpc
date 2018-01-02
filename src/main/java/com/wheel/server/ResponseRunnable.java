@@ -28,6 +28,10 @@ public class ResponseRunnable implements Runnable {
      */
     private Object data;
 
+    public ResponseRunnable(SocketChannel channel) {
+        this.channel = channel;
+    }
+
     public ResponseRunnable(SocketChannel channel, Object data) {
         this.channel = channel;
         this.data = data;
@@ -54,6 +58,40 @@ public class ResponseRunnable implements Runnable {
     @Override
     public void run() {
         ResponseData responseData = new ResponseData(ResponseEnum.SUCCESS, data);
+
+        this.response(responseData);
+    }
+
+    /**
+     * 抛了异常后 调用这个方法返回
+     *
+     * @param exc 异常
+     */
+    public void exceptionRun(Exception exc) {
+        ResponseData responseData = new ResponseData(ResponseEnum.FAIL, null);
+        responseData.setMessage(exc + ":" + exc.getMessage());
+
+        this.response(responseData);
+    }
+
+    /**
+     * 抛了异常后 调用这个方法返回
+     *
+     * @param throwable
+     */
+    public void exceptionRun(Throwable throwable) {
+        ResponseData responseData = new ResponseData(ResponseEnum.FAIL, null);
+        responseData.setMessage(throwable + ":" + throwable.getMessage());
+
+        this.response(responseData);
+    }
+
+    /**
+     * 响应方法
+     *
+     * @param responseData
+     */
+    private void response(ResponseData responseData) {
         byte[] bytes = SerializeUtils.toByteArray(responseData);
         ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
         buffer.put(bytes);
@@ -61,15 +99,13 @@ public class ResponseRunnable implements Runnable {
         try {
             channel.write(buffer);
         } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-        /**
-         * 关闭连接
-         */
-        try {
-            channel.close();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
+        } finally {
+            try {
+                channel.close();
+            } catch (IOException e) {
+                logger.error(e + "");
+            }
         }
     }
 }

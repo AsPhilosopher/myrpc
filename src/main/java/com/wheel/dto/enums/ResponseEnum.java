@@ -8,7 +8,8 @@ package com.wheel.dto.enums;
  * @author 陈樟杰
  */
 public enum ResponseEnum {
-    SUCCESS(200, "SUCCESS");
+    SUCCESS(200, "SUCCESS"),
+    FAIL(500, "FAIL");
 
     private Integer code;
     private String message;
@@ -25,4 +26,5 @@ public enum ResponseEnum {
     public String getMessage() {
         return message;
     }
+
 }

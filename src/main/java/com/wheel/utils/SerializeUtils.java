@@ -32,7 +32,7 @@ public class SerializeUtils {
             oos.close();
             bos.close();
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(ex + "");
         }
         return bytes;
     }
@@ -52,9 +52,9 @@ public class SerializeUtils {
             ois.close();
             bis.close();
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(ex + "");
         } catch (ClassNotFoundException ex) {
-            logger.error(ex.getMessage());
+            logger.error(ex + "");
         }
         return obj;
     }

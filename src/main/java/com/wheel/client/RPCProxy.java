@@ -1,6 +1,9 @@
 package com.wheel.client;
 
 import com.wheel.dto.RequestData;
+import com.wheel.dto.ResponseData;
+import com.wheel.dto.enums.ResponseEnum;
+import com.wheel.exception.RPCException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -66,6 +69,13 @@ public class RPCProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         requestData.setMethodName(method.getName());
         requestData.setArgs(args);
-        return NIOClient.remoteRequest(ip, port, requestData).getData();
+        ResponseData responseData = NIOClient.remoteRequest(ip, port, requestData);
+        /**
+         * RPC调用出现异常
+         */
+        if (!ResponseEnum.SUCCESS.getCode().equals(responseData.getCode())) {
+            throw new RPCException(responseData.getMessage());
+        }
+        return responseData.getData();
     }
 }

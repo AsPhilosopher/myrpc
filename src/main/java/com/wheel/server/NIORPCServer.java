@@ -19,9 +19,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * Created with IntelliJ IDEA
@@ -114,7 +112,7 @@ public class NIORPCServer implements Runnable {
             this.executeThreadPool = ThreadPoolFactory.getFixedThreadPool(POOL_SIZE);
             this.responseThreadPool = ThreadPoolFactory.getFixedThreadPool(POOL_SIZE);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e + "");
         }
 
     }
@@ -164,16 +162,33 @@ public class NIORPCServer implements Runnable {
         ExecuteCallable executeCallable = new ExecuteCallable(requestData);
         Future future = executeThreadPool.submit(executeCallable);
         ResponseRunnable responseRunnable = null;
+        Object result = null;
         try {
-            responseRunnable = new ResponseRunnable(channel, future.get());
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage());
-        } catch (ExecutionException e) {
-            logger.error(e.getMessage());
+            result = future.get(requestData.getExecuteTimeout(), TimeUnit.MICROSECONDS);
+        } catch (Exception e) {
+            logger.error(e + "");
+            responseRunnable = new ResponseRunnable(channel);
+            responseRunnable.exceptionRun(e);
+            return;
         }
-        responseThreadPool.execute(responseRunnable);
 
-//        this.releaseChannel(key);
+        /**
+         * 执行失败 抛了异常
+         */
+        if (null != result && result == executeCallable.getErrorReuslt()) {
+            responseRunnable = new ResponseRunnable(channel);
+            responseRunnable.exceptionRun(executeCallable.getErrorReuslt().getThrowable());
+            return;
+        }
+
+        responseRunnable = new ResponseRunnable(channel, result);
+        future = responseThreadPool.submit(responseRunnable);
+        try {
+            future.get(requestData.getResponseTimeout(), TimeUnit.MICROSECONDS);
+        } catch (Exception e) {
+            logger.error(e + "");
+            responseRunnable.exceptionRun(e);
+        }
     }
 
     private void releaseChannel(SelectionKey key) throws IOException {
@@ -209,12 +224,12 @@ public class NIORPCServer implements Runnable {
                     }
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                logger.error(e + "");
                 //关闭serversocket
                 try {
                     this.serversocket.close();
                 } catch (IOException ioe) {
-                    logger.error(ioe.getMessage());
+                    logger.error(ioe + "");
                 }
             }
         }
