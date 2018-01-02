@@ -11,7 +11,6 @@ public class StartUp {
     public static void main(String[] args) {
         System.out.println("------START------");
         Thread thread = new Thread(new NIORPCServer());
-        thread.run();
-        System.out.println("------END------");
+        thread.start();
     }
 }

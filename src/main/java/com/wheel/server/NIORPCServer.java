@@ -166,6 +166,7 @@ public class NIORPCServer implements Runnable {
         try {
             result = future.get(requestData.getExecuteTimeout(), TimeUnit.MICROSECONDS);
         } catch (Exception e) {
+            logger.info("执行超时");
             logger.error(e + "");
             responseRunnable = new ResponseRunnable(channel);
             responseRunnable.exceptionRun(e);
@@ -186,6 +187,7 @@ public class NIORPCServer implements Runnable {
         try {
             future.get(requestData.getResponseTimeout(), TimeUnit.MICROSECONDS);
         } catch (Exception e) {
+            logger.info("响应超时");
             logger.error(e + "");
             responseRunnable.exceptionRun(e);
         }

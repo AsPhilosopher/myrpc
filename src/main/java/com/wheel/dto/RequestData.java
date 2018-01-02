@@ -44,6 +44,16 @@ public class RequestData implements Serializable {
         this.interfaceFullName = interfaceFullName;
         this.executeTimeout = executeTimeout;
         this.responseTimeout = responseTimeout;
+
+        /**
+         * 默认超时时间
+         */
+        if (null == executeTimeout || executeTimeout <= 0) {
+            executeTimeout = 1000L;
+        }
+        if (null == responseTimeout || responseTimeout <= 0) {
+            responseTimeout = 1000L;
+        }
     }
 
     public String getServiceName() {

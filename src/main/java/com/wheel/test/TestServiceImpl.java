@@ -22,19 +22,20 @@ public class TestServiceImpl implements TestService {
     @Override
     public void fun() {
         System.out.println("fun fun");
-        String s = null;
-        System.out.println(s.getBytes());
+
+        /*String s = null;
+        System.out.println(s.getBytes());*/
 //        throw new RuntimeException("Test Exception");
     }
 
     @Override
     public String fun(Integer a) {
         System.out.println("FUN " + a);
-        try {
+        /*try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
         return "SUCCESS";
     }
 }
