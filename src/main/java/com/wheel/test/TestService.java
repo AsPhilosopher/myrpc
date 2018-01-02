@@ -14,5 +14,5 @@ public interface TestService {
 
     void fun();
 
-    String fun(Integer a);
+    String fun(Integer a, String s);
 }

@@ -20,6 +20,6 @@ public class ClientTest {
         System.out.println(testService.action());
         testService.action(10);
         testService.fun();
-        System.out.println(testService.fun(10));
+        System.out.println(testService.fun(10, "5555"));
     }
 }

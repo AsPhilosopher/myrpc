@@ -29,13 +29,13 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public String fun(Integer a) {
+    public String fun(Integer a, String s) {
         System.out.println("FUN " + a);
         /*try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }*/
-        return "SUCCESS";
+        return "SUCCESS " + s;
     }
 }
