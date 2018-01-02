@@ -62,7 +62,8 @@ public class NIORPCServer implements Runnable {
     /**
      * 线程池大小
      */
-    private final Integer POOL_SIZE = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, _POOL_SIZE));;
+    private final Integer POOL_SIZE = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, _POOL_SIZE));
+    ;
 
     /**
      * 负载均衡策略
@@ -177,7 +178,7 @@ public class NIORPCServer implements Runnable {
             logger.info("执行超时");
             logger.error(e + "");
             responseRunnable = new ResponseRunnable(channel);
-            responseRunnable.exceptionRun(e);
+            responseRunnable.exceptionRun("执行超时", e);
             return;
         }
 
@@ -186,7 +187,7 @@ public class NIORPCServer implements Runnable {
          */
         if (null != result && result == executeCallable.getErrorReuslt()) {
             responseRunnable = new ResponseRunnable(channel);
-            responseRunnable.exceptionRun(executeCallable.getErrorReuslt().getThrowable());
+            responseRunnable.exceptionRun("RPC方法执行异常", executeCallable.getErrorReuslt().getThrowable());
             return;
         }
 
@@ -197,7 +198,7 @@ public class NIORPCServer implements Runnable {
         } catch (Exception e) {
             logger.info("响应超时");
             logger.error(e + "");
-            responseRunnable.exceptionRun(e);
+            responseRunnable.exceptionRun("响应超时", e);
         }
     }
 

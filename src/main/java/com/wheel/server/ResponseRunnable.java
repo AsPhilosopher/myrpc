@@ -65,11 +65,12 @@ public class ResponseRunnable implements Runnable {
     /**
      * 抛了异常后 调用这个方法返回
      *
-     * @param exc 异常
+     * @param message 异常描述
+     * @param exception     异常
      */
-    public void exceptionRun(Exception exc) {
+    public void exceptionRun(String message, Exception exception) {
         ResponseData responseData = new ResponseData(ResponseEnum.FAIL, null);
-        responseData.setMessage(exc + ":" + exc.getMessage());
+        responseData.setMessage(exception + "(" + message + ") message:" + exception.getMessage());
 
         this.response(responseData);
     }
@@ -77,11 +78,12 @@ public class ResponseRunnable implements Runnable {
     /**
      * 抛了异常后 调用这个方法返回
      *
+     * @param message 异常描述
      * @param throwable
      */
-    public void exceptionRun(Throwable throwable) {
+    public void exceptionRun(String message, Throwable throwable) {
         ResponseData responseData = new ResponseData(ResponseEnum.FAIL, null);
-        responseData.setMessage(throwable + ":" + throwable.getMessage());
+        responseData.setMessage(throwable + "(" + message + ") message:" + throwable.getMessage());
 
         this.response(responseData);
     }
