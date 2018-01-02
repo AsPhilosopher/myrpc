@@ -9,4 +9,10 @@ package com.wheel.test;
  */
 public interface TestService {
     Integer action();
+
+    void action(Integer a);
+
+    void fun();
+
+    String fun(Integer a);
 }

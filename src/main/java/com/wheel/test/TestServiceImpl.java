@@ -13,4 +13,20 @@ public class TestServiceImpl implements TestService {
         System.out.println("do action");
         return 200;
     }
+
+    @Override
+    public void action(Integer a) {
+        System.out.println("DO ACTION " + a);
+    }
+
+    @Override
+    public void fun() {
+        System.out.println("fun fun");
+    }
+
+    @Override
+    public String fun(Integer a) {
+        System.out.println("FUN " + a);
+        return "SUCCESS";
+    }
 }

@@ -15,6 +15,11 @@ public class ClientTest {
         RequestData requestData =
                 new RequestData("test", "com.wheel.test.TestService", 1000L, 1000L);
         TestService testService = AOPFactory.getBean(TestService.class, requestData);
-        System.out.println(testService.action() + " @@@@@");
+
+
+        System.out.println(testService.action());
+        testService.action(10);
+        testService.fun();
+        System.out.println(testService.fun(10));
     }
 }
