@@ -12,10 +12,12 @@ import com.wheel.dto.RequestData;
  */
 public class ClientTest {
     public static void main(String[] args) {
-        RequestData requestData =
+        /*RequestData requestData =
                 new RequestData("test", "com.wheel.test.TestService", 1000L, 1000L);
-        TestService testService = AOPFactory.getBean(TestService.class, requestData);
+        TestService testService = AOPFactory.getBean(TestService.class, requestData);*/
 
+        //获取代理bean
+        TestService testService = AOPFactory.getBean("test");
 
         System.out.println(testService.action());
         testService.action(10);

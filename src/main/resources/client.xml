@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <ip>127.0.0.1</ip>
+    <port>8899</port>
+
+    <service name="test" interface="com.wheel.test.TestService" execute_timeout="1000" response_timeout="1000"/>
+</config>

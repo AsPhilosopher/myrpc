@@ -7,6 +7,7 @@ import com.wheel.server.loadbalance.impl.SimpleLoadBalanceStrategy;
 import com.wheel.utils.BufferUtils;
 import com.wheel.utils.SerializeUtils;
 import com.wheel.utils.ThreadPoolFactory;
+import com.wheel.utils.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +31,15 @@ import java.util.concurrent.*;
  */
 public class NIORPCServer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(NIORPCServer.class);
+    private static final String FILE_NAME = "server.xml";
+    private static final String CHANNEL_NUMBER = "channel_number";
+    private static final String _PORT = "port";
+    private static final String BUFFER_SIZE = "buffer_size";
+    private static final String _POOL_SIZE = "pool_size";
 
-    private final Integer NUMBER = 3;
+    private final Integer NUMBER = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, CHANNEL_NUMBER));
 
-    private final Integer PORT = 8899;
+    private final Integer PORT = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, _PORT));
 
     private final String HOSTNAME = "localhost";
 
@@ -52,11 +58,11 @@ public class NIORPCServer implements Runnable {
     /**
      * 缓冲区大小
      */
-    private final Integer SIZE = 256;
+    private final Integer SIZE = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, BUFFER_SIZE));
     /**
      * 线程池大小
      */
-    private final Integer POOL_SIZE = 5;
+    private final Integer POOL_SIZE = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, _POOL_SIZE));;
 
     /**
      * 负载均衡策略
@@ -111,6 +117,8 @@ public class NIORPCServer implements Runnable {
 
             this.executeThreadPool = ThreadPoolFactory.getFixedThreadPool(POOL_SIZE);
             this.responseThreadPool = ThreadPoolFactory.getFixedThreadPool(POOL_SIZE);
+
+            InterfaceMap.init();
         } catch (Exception e) {
             logger.error(e + "");
         }

@@ -14,6 +14,5 @@ public class XMLUtilsTest {
     @Test
     public void getValueByNodeTest() {
         System.out.println(XMLUtils.getValueByNode("utils/test.xml", "node"));
-        System.out.println(XMLUtils.getAttributeById("utils/test.xml", "123", "name"));
     }
 }

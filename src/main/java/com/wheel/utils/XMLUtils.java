@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA
@@ -22,7 +24,7 @@ import java.util.Iterator;
 public class XMLUtils {
     private static final Logger logger = LoggerFactory.getLogger(XMLUtils.class);
     private static final String LEFT_FALL = "/";
-    private static final String ID = "id";
+    private static final String NAME = "name";
 
     private static final URL path = XMLUtils.class.getResource(LEFT_FALL);
 
@@ -54,14 +56,14 @@ public class XMLUtils {
     }
 
     /**
-     * 根据id获得某个属性值
+     * 根据name属性获得某个属性值
      *
      * @param filePath
-     * @param id
+     * @param name
      * @param attributeName
      * @return
      */
-    public static String getAttributeById(String filePath, String id, String attributeName) {
+    public static String getAttributeByName(String filePath, String name, String attributeName) {
         File file = new File(path.getPath() + filePath);
         SAXReader reader = new SAXReader();
         Document document = null;
@@ -75,12 +77,38 @@ public class XMLUtils {
         Iterator iterator = root.elementIterator();
         while (iterator.hasNext()) {
             Element element = (Element) iterator.next();
-            Attribute attributeId = element.attribute(ID);
-            if (null != attributeId && id.equals(attributeId.getValue())) {
+            Attribute attributeForName = element.attribute(NAME);
+            if (null != attributeForName && name.equals(attributeForName.getValue())) {
                 Attribute attribute = element.attribute(attributeName);
                 return (attribute == null) ? null : attribute.getValue();
             }
         }
         return null;
+    }
+
+    /**
+     * 根据节点名称 获取节点列表
+     *
+     * @param filePath
+     * @param nodeName
+     * @return
+     */
+    public static List<Element> getNodesByName(String filePath, String nodeName) {
+        File file = new File(path.getPath() + filePath);
+        SAXReader reader = new SAXReader();
+        Document document = null;
+        try {
+            document = reader.read(file);
+        } catch (DocumentException e) {
+            logger.error(e + "");
+        }
+
+        Element root = document.getRootElement();
+        Iterator iterator = root.elementIterator(nodeName);
+        List<Element> elementList = new ArrayList<>();
+        while (iterator.hasNext()) {
+            elementList.add((Element) iterator.next());
+        }
+        return elementList;
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <channel_number>3</channel_number>
+    <port>8899</port>
+    <buffer_size>256</buffer_size>
+    <pool_size>5</pool_size>
+
+    <mapper interface="com.wheel.test.TestService" implement="com.wheel.test.TestServiceImpl"/>
+</config>
