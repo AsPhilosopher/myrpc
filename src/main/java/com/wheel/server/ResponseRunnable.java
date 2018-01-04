@@ -2,6 +2,8 @@ package com.wheel.server;
 
 import com.wheel.dto.ResponseData;
 import com.wheel.dto.enums.ResponseEnum;
+import com.wheel.server.write.Writer;
+import com.wheel.server.write.impl.DumpWriter;
 import com.wheel.utils.SerializeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,11 @@ public class ResponseRunnable implements Runnable {
      * 响应数据
      */
     private Object data;
+
+    /**
+     *
+     */
+    private Writer writer = new DumpWriter();
 
     public ResponseRunnable(SocketChannel channel) {
         this.channel = channel;
@@ -58,56 +65,32 @@ public class ResponseRunnable implements Runnable {
     @Override
     public void run() {
         ResponseData responseData = new ResponseData(ResponseEnum.SUCCESS, data);
-
-        this.response(responseData);
+        this.writer.write(this.channel, responseData);
     }
 
     /**
      * 抛了异常后 调用这个方法返回
      *
-     * @param message 异常描述
-     * @param exception     异常
+     * @param message   异常描述
+     * @param exception 异常
      */
     public void exceptionRun(String message, Exception exception) {
         ResponseData responseData = new ResponseData(ResponseEnum.FAIL, null);
         responseData.setMessage(exception + "(" + message + ") message:" + exception.getMessage());
 
-        this.response(responseData);
+        this.writer.write(this.channel, responseData);
     }
 
     /**
      * 抛了异常后 调用这个方法返回
      *
-     * @param message 异常描述
+     * @param message   异常描述
      * @param throwable
      */
     public void exceptionRun(String message, Throwable throwable) {
         ResponseData responseData = new ResponseData(ResponseEnum.FAIL, null);
         responseData.setMessage(throwable + "(" + message + ") message:" + throwable.getMessage());
 
-        this.response(responseData);
-    }
-
-    /**
-     * 响应方法
-     *
-     * @param responseData
-     */
-    private void response(ResponseData responseData) {
-        byte[] bytes = SerializeUtils.toByteArray(responseData);
-        ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
-        buffer.put(bytes);
-        buffer.flip();
-        try {
-            channel.write(buffer);
-        } catch (IOException e) {
-            logger.error(e + "");
-        } finally {
-            try {
-                channel.close();
-            } catch (IOException e) {
-                logger.error(e + "");
-            }
-        }
+        this.writer.write(this.channel, responseData);
     }
 }

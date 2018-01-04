@@ -4,7 +4,8 @@ import com.wheel.dto.RequestData;
 import com.wheel.server.loadbalance.LoadBalanceStrategy;
 import com.wheel.server.loadbalance.LoadBalanceUtils;
 import com.wheel.server.loadbalance.impl.SimpleLoadBalanceStrategy;
-import com.wheel.utils.BufferUtils;
+import com.wheel.server.read.Reader;
+import com.wheel.server.read.impl.IncrementReader;
 import com.wheel.utils.SerializeUtils;
 import com.wheel.utils.ThreadPoolFactory;
 import com.wheel.utils.XMLUtils;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -34,7 +34,7 @@ public class NIORPCServer implements Runnable {
     private static final String FILE_NAME = "server.xml";
     private static final String CHANNEL_NUMBER = "channel_number";
     private static final String _PORT = "port";
-    private static final String BUFFER_SIZE = "buffer_size";
+    private static final String _BUFFER_SIZE = "buffer_size";
     private static final String _POOL_SIZE = "pool_size";
 
     private final Integer NUMBER = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, CHANNEL_NUMBER));
@@ -58,7 +58,7 @@ public class NIORPCServer implements Runnable {
     /**
      * 缓冲区大小
      */
-    private final Integer SIZE = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, BUFFER_SIZE));
+    private final Integer BUFFER_SIZE = Integer.valueOf(XMLUtils.getValueByNode(FILE_NAME, _BUFFER_SIZE));
     /**
      * 线程池大小
      */
@@ -77,6 +77,8 @@ public class NIORPCServer implements Runnable {
      * 响应线程池
      */
     private ExecutorService responseThreadPool;
+
+    private Reader reader;
 
     public NIORPCServer() {
         this.init();
@@ -120,6 +122,8 @@ public class NIORPCServer implements Runnable {
             this.responseThreadPool = ThreadPoolFactory.getFixedThreadPool(POOL_SIZE);
 
             InterfaceMap.init();
+
+            this.reader = new IncrementReader();
         } catch (Exception e) {
             logger.error(e + "");
         }
@@ -142,32 +146,19 @@ public class NIORPCServer implements Runnable {
      * @throws IOException
      */
     public void execute(SelectionKey key) throws IOException {
-        //初始化缓冲区
-        ByteBuffer buffer = ByteBuffer.allocate(this.SIZE);
+
         //通过选择键来找到之前注册的通道
         SocketChannel channel = (SocketChannel) key.channel();
 
-        int count;
-        int size = 0;
-        while (0 != (count = channel.read(buffer)) && -1 != count) {
-            size += count;
-            //需要扩容
-            if (size >= buffer.capacity()) {
-                buffer = BufferUtils.extendBuffer(buffer, 2.0);
-            }
-        }
-        if (-1 == count) {
-            this.releaseChannel(key);
-            logger.info("Finish:{}", key);
-        }
-
         /**
-         * 获得对象字节数组 进行对应长度复制
+         * 读取客户端数据
          */
-        byte[] bytes = new byte[size];
-        System.arraycopy(buffer.array(), 0, bytes, 0, size);
+        byte[] bytes = this.reader.read(key, this.BUFFER_SIZE);
         RequestData requestData = (RequestData) SerializeUtils.toObject(bytes);
 
+        /**
+         * 提交任务执行
+         */
         ExecuteCallable executeCallable = new ExecuteCallable(requestData);
         Future future = executeThreadPool.submit(executeCallable);
         ResponseRunnable responseRunnable = null;
@@ -191,6 +182,9 @@ public class NIORPCServer implements Runnable {
             return;
         }
 
+        /**
+         * 执行成功 返回响应数据
+         */
         responseRunnable = new ResponseRunnable(channel, result);
         future = responseThreadPool.submit(responseRunnable);
         try {
@@ -200,11 +194,6 @@ public class NIORPCServer implements Runnable {
             logger.error(e + "");
             responseRunnable.exceptionRun("响应超时", e);
         }
-    }
-
-    private void releaseChannel(SelectionKey key) throws IOException {
-        key.channel().close();
-        key.cancel();
     }
 
     @Override

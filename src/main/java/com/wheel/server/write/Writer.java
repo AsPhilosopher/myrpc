@@ -1,6 +1,7 @@
 package com.wheel.server.write;
 
 import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 
 /**
  * Created with IntelliJ IDEA
@@ -13,16 +14,16 @@ public interface Writer {
     /**
      * 往通道里写内容
      *
-     * @param selectionKey
+     * @param channel
      * @param object
      */
-    void write(SelectionKey selectionKey, Object object);
+    void write(SocketChannel channel, Object object);
 
     /**
      * 往通道里写内容
      *
-     * @param selectionKey
+     * @param channel
      * @param bytes
      */
-    void write(SelectionKey selectionKey, byte[] bytes);
+    void write(SocketChannel channel, byte[] bytes);
 }

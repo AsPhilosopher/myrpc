@@ -1,6 +1,8 @@
 package com.wheel.server.read;
 
+import java.io.IOException;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 
 /**
  * Created with IntelliJ IDEA
@@ -14,7 +16,8 @@ public interface Reader {
      * 从通道里读内容
      *
      * @param selectionKey
+     * @param bufferSize
      * @return
      */
-    byte[] read(SelectionKey selectionKey);
+    byte[] read(SelectionKey selectionKey, int bufferSize) throws IOException;
 }
