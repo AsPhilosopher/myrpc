@@ -74,7 +74,7 @@ public class ResponseRunnable implements Runnable {
      * @param message   异常描述
      * @param exception 异常
      */
-    public void exceptionRun(String message, Exception exception) {
+    public void exceptionResponse(String message, Exception exception) {
         ResponseData responseData = new ResponseData(ResponseEnum.FAIL, null);
         responseData.setMessage(exception + "(" + message + ") message:" + exception.getMessage());
 
@@ -87,7 +87,7 @@ public class ResponseRunnable implements Runnable {
      * @param message   异常描述
      * @param throwable
      */
-    public void exceptionRun(String message, Throwable throwable) {
+    public void exceptionResponse(String message, Throwable throwable) {
         ResponseData responseData = new ResponseData(ResponseEnum.FAIL, null);
         responseData.setMessage(throwable + "(" + message + ") message:" + throwable.getMessage());
 

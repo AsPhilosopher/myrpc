@@ -169,7 +169,7 @@ public class NIORPCServer implements Runnable {
             logger.info("执行超时");
             logger.error(e + "");
             responseRunnable = new ResponseRunnable(channel);
-            responseRunnable.exceptionRun("执行超时", e);
+            responseRunnable.exceptionResponse("执行超时", e);
             return;
         }
 
@@ -178,7 +178,7 @@ public class NIORPCServer implements Runnable {
          */
         if (null != result && result == executeCallable.getErrorReuslt()) {
             responseRunnable = new ResponseRunnable(channel);
-            responseRunnable.exceptionRun("RPC方法执行异常", executeCallable.getErrorReuslt().getThrowable());
+            responseRunnable.exceptionResponse("RPC方法执行异常", executeCallable.getErrorReuslt().getThrowable());
             return;
         }
 
@@ -192,7 +192,7 @@ public class NIORPCServer implements Runnable {
         } catch (Exception e) {
             logger.info("响应超时");
             logger.error(e + "");
-            responseRunnable.exceptionRun("响应超时", e);
+            responseRunnable.exceptionResponse("响应超时", e);
         }
     }
 
