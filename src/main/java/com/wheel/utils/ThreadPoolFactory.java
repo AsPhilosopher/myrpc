@@ -16,7 +16,7 @@ public class ThreadPoolFactory {
     private static final Double MULTIPLE = 1.5;
 
     /**
-     * 获取数据库连接池
+     * 获取线程池
      *
      * @param poolSize
      * @param maxPoolSize
