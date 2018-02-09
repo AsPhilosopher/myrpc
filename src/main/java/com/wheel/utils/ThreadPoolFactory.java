@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * @author 陈樟杰
  */
 public class ThreadPoolFactory {
-    private static final Double MULTIPLE = 1.5;
+    public static final Double MULTIPLE = 1.5;
 
     /**
      * 获取线程池
